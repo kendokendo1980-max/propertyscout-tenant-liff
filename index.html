@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PropertyScout — แจ้งปัญหา / Report Issue</title>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Prompt', 'Roboto', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      padding: 0 0 48px;
+      color: #182C54;
+    }
+
+    /* Header */
+    .header {
+      background: #182C54;
+      padding: 20px 20px 24px;
+      text-align: center;
+    }
+
+    .header-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+    }
+
+    .logo-text {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      text-align: left;
+    }
+
+    .header h1 {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ffffff;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px 0;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c8d0dc;
+      transition: background 0.2s;
+    }
+
+    .step-dot.active {
+      background: #F03424;
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    /* Field */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #182C54;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .field-label .en {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    .field-label .required {
+      color: #F03424;
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="tel"] {
+      width: 100%;
+      border: 1.5px solid #e0e4ea;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 14px;
+      color: #182C54;
+      outline: none;
+      transition: border-color 0.15s;
+      background: #fff;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus {
+      border-color: #182C54;
+    }
+
+    input::placeholder {
+      color: #b0b8c4;
+      font-weight: 400;
+    }
+
+    /* Category cards (step 1) */
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .category-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 16px;
+      border: 1.5px solid #e0e4ea;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: #fff;
+    }
+
+    .category-card:hover {
+      border-color: #182C54;
+      background: #f8f9fb;
+    }
+
+    .category-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .category-card-text {
+      flex: 1;
+    }
+
+    .category-card-title {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #182C54;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .category-card-sub {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .category-card-arrow {
+      color: #c8d0dc;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Inquiry type list (step 2) */
+    .inquiry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inquiry-option input[type="radio"] {
+      display: none;
+    }
+
+    .inquiry-option label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 1.5px solid #e0e4ea;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Prompt', sans-serif;
+      font-size: 13px;
+      color: #182C54;
+      line-height: 1.4;
+    }
+
+    .inquiry-option label .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #c8d0dc;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .inquiry-option input[type="radio"]:checked + label {
+      border-color: #F03424;
+      background: #fff5f5;
+      color: #182C54;
+      font-weight: 700;
+    }
+
+    .inquiry-option input[type="radio"]:checked + label .dot {
+      border-color: #F03424;
+      background: #F03424;
+    }
+
+    .inquiry-option input[type="radio"]:checked + label .dot::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .inquiry-option label .label-text {
+      flex: 1;
+    }
+
+    .inquiry-option label .label-en {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      color: #6b7280;
+      display: block;
+    }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      border: 1.5px solid #e0e4ea;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 14px;
+      color: #182C54;
+      resize: none;
+      height: 96px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      border-color: #182C54;
+    }
+
+    textarea::placeholder {
+      color: #b0b8c4;
+      font-weight: 400;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f0f2f5;
+      margin: 20px 0;
+    }
+
+    /* Selected category badge */
+    .selected-category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #f0f2f5;
+      border-radius: 20px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #182C54;
+      margin-bottom: 16px;
+    }
+
+    /* Back button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-family: 'Prompt', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover { color: #182C54; }
+
+    /* Submit */
+    button[type="submit"] {
+      width: 100%;
+      background: #F03424;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s;
+      letter-spacing: 0.3px;
+    }
+
+    button[type="submit"]:hover { background: #d42e1e; }
+    button[type="submit"]:disabled { background: #c0c8d4; cursor: not-allowed; }
+
+    /* Thank you */
+    #thanks {
+      display: none;
+      text-align: center;
+      padding: 48px 20px;
+    }
+
+    #thanks .check {
+      width: 64px;
+      height: 64px;
+      background: #182C54;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    #thanks .check svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    #thanks h2 {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #182C54;
+      margin-bottom: 8px;
+    }
+
+    #thanks p {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* View transitions */
+    .view { display: none; }
+    .view.active { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <svg class="logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 2L33 11.5V24.5L18 34L3 24.5V11.5L18 2Z" fill="#F03424"/>
+      <path d="M12 18C12 14.686 14.686 12 18 12C21.314 12 24 14.686 24 18" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="18" cy="21" r="2.5" fill="white"/>
+      <path d="M13 24.5C14.5 23 16.2 22.5 18 22.5C19.8 22.5 21.5 23 23 24.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div class="logo-text">PROPERTY<br/>SCOUT</div>
+  </div>
+  <h1>แจ้งปัญหา / Report Issue</h1>
+  <p>กรอกข้อมูลสั้นๆ เพื่อให้ทีมช่วยได้ตรงจุด<br/>Fill in the details so we can help you faster</p>
+</div>
+
+<!-- Step indicators -->
+<div class="step-indicator" id="step-indicator">
+  <div class="step-dot active" id="dot-1"></div>
+  <div class="step-dot" id="dot-2"></div>
+</div>
+
+<div class="card">
+
+  <!-- Step 1: Personal info + category picker -->
+  <div class="view active" id="step1">
+    <div class="field">
+      <label class="field-label" for="name">
+        ชื่อ / Name <span class="required">*</span>
+      </label>
+      <input type="text" id="name" name="name" placeholder="ชื่อ-นามสกุล / Full name" required />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="phone">
+        เบอร์โทรศัพท์ / Contact Number <span class="required">*</span>
+      </label>
+      <input type="tel" id="phone" name="phone" placeholder="0XX-XXX-XXXX" required />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="building">
+        ชื่ออาคาร / Building Name <span class="required">*</span>
+      </label>
+      <input type="text" id="building" name="building" placeholder="ชื่อคอนโด / Condo name" required />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="unit">
+        หมายเลขห้อง / Unit Number <span class="required">*</span>
+      </label>
+      <input type="text" id="unit" name="unit" placeholder="เช่น 12B / e.g. 12B" required />
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="field-label">
+        ประเภทการติดต่อ / Inquiry Type <span class="required">*</span>
+      </label>
+      <div class="category-list">
+
+        <div class="category-card" data-category="maintenance">
+          <div class="category-icon">🔧</div>
+          <div class="category-card-text">
+            <div class="category-card-title">ซ่อมแซม / Maintenance</div>
+            <div class="category-card-sub">ห้องพัก, แอร์, ท่อ, สัตว์รบกวน, คีย์การ์ด, พื้นที่ส่วนกลาง</div>
+          </div>
+          <div class="category-card-arrow">›</div>
+        </div>
+
+        <div class="category-card" data-category="lease">
+          <div class="category-icon">📄</div>
+          <div class="category-card-text">
+            <div class="category-card-title">สัญญาเช่า / Lease & Contract</div>
+            <div class="category-card-sub">ต่อสัญญา, ย้ายออก, ยกเลิก, สัญญา, เอกสาร, TM30</div>
+          </div>
+          <div class="category-card-arrow">›</div>
+        </div>
+
+        <div class="category-card" data-category="payments">
+          <div class="category-icon">💰</div>
+          <div class="category-card-text">
+            <div class="category-card-title">การเงิน / Payments</div>
+            <div class="category-card-sub">เงินประกัน, การชำระเงิน</div>
+          </div>
+          <div class="category-card-arrow">›</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Sub-type picker + details + submit -->
+  <div class="view" id="step2">
+    <button class="back-btn" id="back-btn">
+      ‹ &nbsp;เปลี่ยนประเภท / Change Category
+    </button>
+
+    <div id="selected-badge"></div>
+
+    <div class="field">
+      <label class="field-label">
+        เรื่องที่ต้องการแจ้ง / Issue Type <span class="required">*</span>
+      </label>
+      <div class="inquiry-list" id="inquiry-list"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label class="field-label" for="details">
+        รายละเอียดเพิ่มเติม / Additional Details
+        <span class="en">(ไม่บังคับ / Optional)</span>
+      </label>
+      <textarea id="details" name="details" placeholder="อธิบายปัญหาสั้นๆ / Brief description..."></textarea>
+    </div>
+
+    <button type="submit" id="submit-btn">ส่งข้อมูล / Submit →</button>
+  </div>
+
+  <div id="thanks">
+    <div class="check">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 16L13 22L25 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>ขอบคุณครับ! / Thank you!</h2>
+    <p>ทีมงาน PropertyScout ได้รับข้อมูลของคุณแล้ว<br/>เราจะติดต่อกลับโดยเร็วที่สุด<br/><br/>We have received your information.<br/>Our team will get back to you shortly.</p>
+  </div>
+</div>
+
+<script>
+  const LIFF_ID = "2009603278-0V2vac98";
+  const WEBHOOK_URL = "YOUR_MAKE_WEBHOOK_URL_HERE";
+
+  const CATEGORIES = {
+    maintenance: {
+      label: "🔧 ซ่อมแซม / Maintenance",
+      options: [
+        { id: "inroom",  value: "In-room Issues",    th: "ปัญหาในห้องพัก (น้ำ ไฟ เครื่องใช้ไฟฟ้า)",    en: "In-room Issues (water, electricity, appliances)" },
+        { id: "drain",   value: "Drain Blockage",     th: "ท่อตัน / ปัญหากลิ่น",                          en: "Drain Blockage or Unpleasant Odors" },
+        { id: "aircon",  value: "Air Conditioning",   th: "ปัญหาแอร์ (น้ำรั่ว ไม่เย็น ล้างแอร์)",         en: "Air Conditioning Issues (leaking, not cooling, cleaning)" },
+        { id: "pest",    value: "Pest Issues",        th: "ปัญหาสัตว์รบกวน",                               en: "Pest Issues" },
+        { id: "keycard", value: "Key Card / Access",  th: "คีย์การ์ด / การเข้าออก",                        en: "Key Card or Access-related Issues" },
+        { id: "parcel",  value: "Parcel / Common Area", th: "พัสดุ / พื้นที่ส่วนกลาง",                    en: "Parcel or Common Area Inquiries" },
+      ]
+    },
+    lease: {
+      label: "📄 สัญญาเช่า / Lease & Contract",
+      options: [
+        { id: "extension",        value: "Extension Follow Up",   th: "ติดตามการต่อสัญญา",           en: "Extension Follow Up" },
+        { id: "checkout",         value: "Check Out Planning",    th: "วางแผนการย้ายออก",             en: "Check Out Planning" },
+        { id: "earlytermination", value: "Early Termination",     th: "ยกเลิกสัญญาก่อนกำหนด",        en: "Early Termination" },
+        { id: "contract",         value: "Contract Inquiries",    th: "สอบถามสัญญาเช่า",              en: "Contract Inquiries" },
+        { id: "tenancydocs",      value: "Tenancy Documents",     th: "เอกสารผู้เช่า",                en: "Tenancy Documents" },
+        { id: "tm30",             value: "TM30",                  th: "TM30",                         en: "TM30" },
+      ]
+    },
+    payments: {
+      label: "💰 การเงิน / Payments",
+      options: [
+        { id: "deposit", value: "Deposit Follow Up", th: "ติดตามเงินประกัน",    en: "Deposit Follow Up" },
+        { id: "payment", value: "Payment Follow Up", th: "ติดตามการชำระเงิน",   en: "Payment Follow Up" },
+      ]
+    }
+  };
+
+  let selectedCategory = null;
+
+  async function init() {
+    try {
+      await liff.init({ liffId: LIFF_ID });
+    } catch (e) {
+      console.warn("LIFF init failed, running in browser mode", e);
+    }
+  }
+
+  init();
+
+  // Validate step 1 personal info fields
+  function step1Valid() {
+    return (
+      document.getElementById("name").value.trim() &&
+      document.getElementById("phone").value.trim() &&
+      document.getElementById("building").value.trim() &&
+      document.getElementById("unit").value.trim()
+    );
+  }
+
+  // Category card click → go to step 2
+  document.querySelectorAll(".category-card").forEach(card => {
+    card.addEventListener("click", () => {
+      if (!step1Valid()) {
+        // Highlight empty fields
+        ["name", "phone", "building", "unit"].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el.value.trim()) el.style.borderColor = "#F03424";
+        });
+        document.getElementById("name").focus();
+        return;
+      }
+
+      selectedCategory = card.dataset.category;
+      renderStep2(selectedCategory);
+      showStep(2);
+    });
+  });
+
+  // Clear red border on input
+  ["name", "phone", "building", "unit"].forEach(id => {
+    document.getElementById(id).addEventListener("input", function () {
+      this.style.borderColor = "";
+    });
+  });
+
+  // Back button
+  document.getElementById("back-btn").addEventListener("click", () => {
+    showStep(1);
+  });
+
+  function showStep(n) {
+    document.getElementById("step1").classList.toggle("active", n === 1);
+    document.getElementById("step2").classList.toggle("active", n === 2);
+    document.getElementById("dot-1").classList.toggle("active", n === 1);
+    document.getElementById("dot-2").classList.toggle("active", n === 2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderStep2(category) {
+    const cat = CATEGORIES[category];
+
+    // Badge
+    document.getElementById("selected-badge").innerHTML =
+      `<div class="selected-category-badge">${cat.label}</div>`;
+
+    // Radio options
+    const list = document.getElementById("inquiry-list");
+    list.innerHTML = cat.options.map(opt => `
+      <div class="inquiry-option">
+        <input type="radio" name="inquiryType" id="${opt.id}" value="${opt.value}" />
+        <label for="${opt.id}">
+          <span class="dot"></span>
+          <span class="label-text">
+            ${opt.th}
+            <span class="label-en">${opt.en}</span>
+          </span>
+        </label>
+      </div>
+    `).join("");
+  }
+
+  // Submit
+  document.getElementById("submit-btn").addEventListener("click", async function () {
+    const checked = document.querySelector('input[name="inquiryType"]:checked');
+    if (!checked) {
+      document.getElementById("inquiry-list").style.outline = "2px solid #F03424";
+      document.getElementById("inquiry-list").style.borderRadius = "10px";
+      return;
+    }
+    document.getElementById("inquiry-list").style.outline = "";
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = "กำลังส่ง... / Sending...";
+
+    let userId = "unknown";
+    try {
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        userId = profile.userId;
+      }
+    } catch (_) {}
+
+    const payload = {
+      userId,
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      building: document.getElementById("building").value,
+      unit: document.getElementById("unit").value,
+      category: selectedCategory,
+      inquiryType: checked.value,
+      details: document.getElementById("details").value,
+      submittedAt: new Date().toISOString()
+    };
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error("Webhook error:", err);
+    }
+
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step-indicator").style.display = "none";
+    document.getElementById("thanks").style.display = "block";
+
+    setTimeout(() => {
+      try { liff.closeWindow(); } catch (_) {}
+    }, 2500);
+  });
+</script>
+</body>
+</html>
