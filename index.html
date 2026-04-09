@@ -33,10 +33,7 @@
       margin-bottom: 12px;
     }
 
-    .logo-mark {
-      width: 36px;
-      height: 36px;
-    }
+    .logo-mark { width: 36px; height: 36px; }
 
     .logo-text {
       font-family: 'Roboto', sans-serif;
@@ -78,7 +75,7 @@
       height: 8px;
       border-radius: 50%;
       background: #c8d0dc;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .step-dot.active {
@@ -96,9 +93,7 @@
     }
 
     /* Field */
-    .field {
-      margin-bottom: 20px;
-    }
+    .field { margin-bottom: 20px; }
 
     .field-label {
       display: block;
@@ -137,16 +132,11 @@
     }
 
     input[type="text"]:focus,
-    input[type="tel"]:focus {
-      border-color: #182C54;
-    }
+    input[type="tel"]:focus { border-color: #182C54; }
 
-    input::placeholder {
-      color: #b0b8c4;
-      font-weight: 400;
-    }
+    input::placeholder { color: #b0b8c4; font-weight: 400; }
 
-    /* Category cards (step 1) */
+    /* Category cards (step 2) */
     .category-list {
       display: flex;
       flex-direction: column;
@@ -157,7 +147,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 16px 16px;
+      padding: 16px;
       border: 1.5px solid #e0e4ea;
       border-radius: 12px;
       cursor: pointer;
@@ -182,9 +172,7 @@
       flex-shrink: 0;
     }
 
-    .category-card-text {
-      flex: 1;
-    }
+    .category-card-text { flex: 1; }
 
     .category-card-title {
       font-family: 'Prompt', sans-serif;
@@ -208,16 +196,14 @@
       flex-shrink: 0;
     }
 
-    /* Inquiry type list (step 2) */
+    /* Inquiry type radio list (step 3) */
     .inquiry-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .inquiry-option input[type="radio"] {
-      display: none;
-    }
+    .inquiry-option input[type="radio"] { display: none; }
 
     .inquiry-option label {
       display: flex;
@@ -247,7 +233,6 @@
     .inquiry-option input[type="radio"]:checked + label {
       border-color: #F03424;
       background: #fff5f5;
-      color: #182C54;
       font-weight: 700;
     }
 
@@ -259,18 +244,14 @@
     .inquiry-option input[type="radio"]:checked + label .dot::after {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 6px;
-      height: 6px;
+      width: 6px; height: 6px;
       background: #fff;
       border-radius: 50%;
     }
 
-    .inquiry-option label .label-text {
-      flex: 1;
-    }
+    .inquiry-option label .label-text { flex: 1; }
 
     .inquiry-option label .label-en {
       font-family: 'Roboto', sans-serif;
@@ -295,20 +276,10 @@
       transition: border-color 0.15s;
     }
 
-    textarea:focus {
-      border-color: #182C54;
-    }
+    textarea:focus { border-color: #182C54; }
+    textarea::placeholder { color: #b0b8c4; font-weight: 400; }
 
-    textarea::placeholder {
-      color: #b0b8c4;
-      font-weight: 400;
-    }
-
-    .divider {
-      height: 1px;
-      background: #f0f2f5;
-      margin: 20px 0;
-    }
+    .divider { height: 1px; background: #f0f2f5; margin: 20px 0; }
 
     /* Selected category badge */
     .selected-category-badge {
@@ -342,8 +313,8 @@
 
     .back-btn:hover { color: #182C54; }
 
-    /* Submit */
-    button[type="submit"] {
+    /* Primary button */
+    .btn-primary {
       width: 100%;
       background: #F03424;
       color: #fff;
@@ -359,8 +330,8 @@
       letter-spacing: 0.3px;
     }
 
-    button[type="submit"]:hover { background: #d42e1e; }
-    button[type="submit"]:disabled { background: #c0c8d4; cursor: not-allowed; }
+    .btn-primary:hover { background: #d42e1e; }
+    .btn-primary:disabled { background: #c0c8d4; cursor: not-allowed; }
 
     /* Thank you */
     #thanks {
@@ -370,8 +341,7 @@
     }
 
     #thanks .check {
-      width: 64px;
-      height: 64px;
+      width: 64px; height: 64px;
       background: #182C54;
       border-radius: 50%;
       display: flex;
@@ -380,10 +350,7 @@
       margin: 0 auto 20px;
     }
 
-    #thanks .check svg {
-      width: 32px;
-      height: 32px;
-    }
+    #thanks .check svg { width: 32px; height: 32px; }
 
     #thanks h2 {
       font-family: 'Prompt', sans-serif;
@@ -400,7 +367,6 @@
       line-height: 1.6;
     }
 
-    /* View transitions */
     .view { display: none; }
     .view.active { display: block; }
   </style>
@@ -425,11 +391,12 @@
 <div class="step-indicator" id="step-indicator">
   <div class="step-dot active" id="dot-1"></div>
   <div class="step-dot" id="dot-2"></div>
+  <div class="step-dot" id="dot-3"></div>
 </div>
 
 <div class="card">
 
-  <!-- Step 1: Personal info + category picker -->
+  <!-- Step 1: Personal info -->
   <div class="view active" id="step1">
     <div class="field">
       <label class="field-label" for="name">
@@ -459,7 +426,14 @@
       <input type="text" id="unit" name="unit" placeholder="เช่น 12B / e.g. 12B" required />
     </div>
 
-    <div class="divider"></div>
+    <button class="btn-primary" id="next-btn">ถัดไป / Next →</button>
+  </div>
+
+  <!-- Step 2: Category selection -->
+  <div class="view" id="step2">
+    <button class="back-btn" id="back-btn-2">
+      ‹ &nbsp;กลับ / Back
+    </button>
 
     <div class="field">
       <label class="field-label">
@@ -471,7 +445,7 @@
           <div class="category-icon">🔧</div>
           <div class="category-card-text">
             <div class="category-card-title">ซ่อมแซม / Maintenance</div>
-            <div class="category-card-sub">ห้องพัก, แอร์, ท่อ, สัตว์รบกวน, คีย์การ์ด, พื้นที่ส่วนกลาง</div>
+            <div class="category-card-sub">น้ำ, ไฟ, แอร์, ท่อ, สัตว์รบกวน, คีย์การ์ด, พื้นที่ส่วนกลาง</div>
           </div>
           <div class="category-card-arrow">›</div>
         </div>
@@ -479,7 +453,7 @@
         <div class="category-card" data-category="lease">
           <div class="category-icon">📄</div>
           <div class="category-card-text">
-            <div class="category-card-title">สัญญาเช่า / Lease & Contract</div>
+            <div class="category-card-title">สัญญาเช่า / Lease &amp; Contract</div>
             <div class="category-card-sub">ต่อสัญญา, ย้ายออก, ยกเลิก, สัญญา, เอกสาร, TM30</div>
           </div>
           <div class="category-card-arrow">›</div>
@@ -489,7 +463,7 @@
           <div class="category-icon">💰</div>
           <div class="category-card-text">
             <div class="category-card-title">การเงิน / Payments</div>
-            <div class="category-card-sub">เงินประกัน, การชำระเงิน</div>
+            <div class="category-card-sub">เงินประกัน, ค่าสาธารณูปโภค, ค่าเช่า</div>
           </div>
           <div class="category-card-arrow">›</div>
         </div>
@@ -498,9 +472,9 @@
     </div>
   </div>
 
-  <!-- Step 2: Sub-type picker + details + submit -->
-  <div class="view" id="step2">
-    <button class="back-btn" id="back-btn">
+  <!-- Step 3: Sub-type + details + submit -->
+  <div class="view" id="step3">
+    <button class="back-btn" id="back-btn-3">
       ‹ &nbsp;เปลี่ยนประเภท / Change Category
     </button>
 
@@ -517,13 +491,13 @@
 
     <div class="field">
       <label class="field-label" for="details">
-        รายละเอียดเพิ่มเติม / Additional Details
+        รายละเอียดเพิ่มเติม / Explanation of Inquiry
         <span class="en">(ไม่บังคับ / Optional)</span>
       </label>
       <textarea id="details" name="details" placeholder="อธิบายปัญหาสั้นๆ / Brief description..."></textarea>
     </div>
 
-    <button type="submit" id="submit-btn">ส่งข้อมูล / Submit →</button>
+    <button class="btn-primary" id="submit-btn">ส่งข้อมูล / Submit →</button>
   </div>
 
   <div id="thanks">
@@ -545,30 +519,33 @@
     maintenance: {
       label: "🔧 ซ่อมแซม / Maintenance",
       options: [
-        { id: "inroom",  value: "In-room Issues",    th: "ปัญหาในห้องพัก (น้ำ ไฟ เครื่องใช้ไฟฟ้า)",    en: "In-room Issues (water, electricity, appliances)" },
-        { id: "drain",   value: "Drain Blockage",     th: "ท่อตัน / ปัญหากลิ่น",                          en: "Drain Blockage or Unpleasant Odors" },
-        { id: "aircon",  value: "Air Conditioning",   th: "ปัญหาแอร์ (น้ำรั่ว ไม่เย็น ล้างแอร์)",         en: "Air Conditioning Issues (leaking, not cooling, cleaning)" },
-        { id: "pest",    value: "Pest Issues",        th: "ปัญหาสัตว์รบกวน",                               en: "Pest Issues" },
-        { id: "keycard", value: "Key Card / Access",  th: "คีย์การ์ด / การเข้าออก",                        en: "Key Card or Access-related Issues" },
-        { id: "parcel",  value: "Parcel / Common Area", th: "พัสดุ / พื้นที่ส่วนกลาง",                    en: "Parcel or Common Area Inquiries" },
+        { id: "water_elec",    value: "Water / Electricity Issues",       th: "น้ำรั่ว, น้ำดับ, ไฟดับ",                                      en: "Water leaking, water shut off, electricity cut off" },
+        { id: "drain",         value: "Drain Blockage / Odors",           th: "ท่อตัน, ปัญหากลิ่น",                                           en: "Drain blockage, unpleasant odors" },
+        { id: "aircon_fridge", value: "AC / Fridge Issues",               th: "แอร์, ตู้เย็นไม่ทำงาน/ไม่เย็น",                               en: "Air conditioner, fridge not working/not cooling" },
+        { id: "appliances",    value: "Appliance Issues",                 th: "ปัญหาเครื่องซักผ้า, เตา, เครื่องดูดควัน, และทีวี",            en: "Washing machine, Stove, Kitchen hood, and TV issues" },
+        { id: "aircon_clean",  value: "AC Leaking / AC Cleaning",         th: "แอร์รั่ว, ล้างแอร์",                                           en: "Air conditioners leaking, AC cleaning" },
+        { id: "pest",          value: "Pest Issues",                      th: "ปัญหาสัตว์รบกวน",                                              en: "Pest issues" },
+        { id: "keycard",       value: "Key Card / Access Issues",         th: "คีย์การ์ด / การเข้าออก",                                       en: "Key card or access-related issues" },
+        { id: "parcel",        value: "Parcel / Common Area Inquiries",   th: "พัสดุ / พื้นที่ส่วนกลาง",                                      en: "Parcel or common area inquiries" },
       ]
     },
     lease: {
       label: "📄 สัญญาเช่า / Lease & Contract",
       options: [
-        { id: "extension",        value: "Extension Follow Up",   th: "ติดตามการต่อสัญญา",           en: "Extension Follow Up" },
-        { id: "checkout",         value: "Check Out Planning",    th: "วางแผนการย้ายออก",             en: "Check Out Planning" },
-        { id: "earlytermination", value: "Early Termination",     th: "ยกเลิกสัญญาก่อนกำหนด",        en: "Early Termination" },
-        { id: "contract",         value: "Contract Inquiries",    th: "สอบถามสัญญาเช่า",              en: "Contract Inquiries" },
-        { id: "tenancydocs",      value: "Tenancy Documents",     th: "เอกสารผู้เช่า",                en: "Tenancy Documents" },
-        { id: "tm30",             value: "TM30",                  th: "TM30",                         en: "TM30" },
+        { id: "tm30",             value: "TM30",                    th: "TM30",                         en: "TM30" },
+        { id: "extension",        value: "Extension Follow Up",     th: "ติดตามการต่อสัญญา",           en: "Extension Follow Up" },
+        { id: "checkout",         value: "Check Out Planning",      th: "วางแผนการย้ายออก",             en: "Check Out Planning" },
+        { id: "earlytermination", value: "Early Termination",       th: "ยกเลิกสัญญาก่อนกำหนด",        en: "Early Termination" },
+        { id: "contract",         value: "Contract Inquiries",      th: "สอบถามสัญญาเช่า",              en: "Contract Inquiries" },
+        { id: "tenancydoc",       value: "Tenancy Document",        th: "เอกสารผู้เช่า",                en: "Tenancy Document" },
       ]
     },
     payments: {
       label: "💰 การเงิน / Payments",
       options: [
-        { id: "deposit", value: "Deposit Follow Up", th: "ติดตามเงินประกัน",    en: "Deposit Follow Up" },
-        { id: "payment", value: "Payment Follow Up", th: "ติดตามการชำระเงิน",   en: "Payment Follow Up" },
+        { id: "deposit",        value: "Deposit Follow Up",           th: "ติดตามเงินประกัน",           en: "Deposit Follow Up" },
+        { id: "utility",        value: "Utility Bill Follow Up",      th: "ติดตามค่าสาธารณูปโภค",      en: "Utility Bill Follow Up" },
+        { id: "rental_payment", value: "Rental Payment Follow Up",    th: "ติดตามการชำระค่าเช่า",       en: "Rental Payment Follow Up" },
       ]
     }
   };
@@ -585,7 +562,6 @@
 
   init();
 
-  // Validate step 1 personal info fields
   function step1Valid() {
     return (
       document.getElementById("name").value.trim() &&
@@ -595,25 +571,6 @@
     );
   }
 
-  // Category card click → go to step 2
-  document.querySelectorAll(".category-card").forEach(card => {
-    card.addEventListener("click", () => {
-      if (!step1Valid()) {
-        // Highlight empty fields
-        ["name", "phone", "building", "unit"].forEach(id => {
-          const el = document.getElementById(id);
-          if (!el.value.trim()) el.style.borderColor = "#F03424";
-        });
-        document.getElementById("name").focus();
-        return;
-      }
-
-      selectedCategory = card.dataset.category;
-      renderStep2(selectedCategory);
-      showStep(2);
-    });
-  });
-
   // Clear red border on input
   ["name", "phone", "building", "unit"].forEach(id => {
     document.getElementById(id).addEventListener("input", function () {
@@ -621,28 +578,50 @@
     });
   });
 
-  // Back button
-  document.getElementById("back-btn").addEventListener("click", () => {
-    showStep(1);
+  // Step 1 → Step 2
+  document.getElementById("next-btn").addEventListener("click", () => {
+    if (!step1Valid()) {
+      ["name", "phone", "building", "unit"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) el.style.borderColor = "#F03424";
+      });
+      document.getElementById("name").focus();
+      return;
+    }
+    showStep(2);
+  });
+
+  // Step 2 → back to Step 1
+  document.getElementById("back-btn-2").addEventListener("click", () => showStep(1));
+
+  // Step 3 → back to Step 2
+  document.getElementById("back-btn-3").addEventListener("click", () => showStep(2));
+
+  // Category card click → Step 3
+  document.querySelectorAll(".category-card").forEach(card => {
+    card.addEventListener("click", () => {
+      selectedCategory = card.dataset.category;
+      renderStep3(selectedCategory);
+      showStep(3);
+    });
   });
 
   function showStep(n) {
-    document.getElementById("step1").classList.toggle("active", n === 1);
-    document.getElementById("step2").classList.toggle("active", n === 2);
-    document.getElementById("dot-1").classList.toggle("active", n === 1);
-    document.getElementById("dot-2").classList.toggle("active", n === 2);
+    [1, 2, 3].forEach(i => {
+      document.getElementById("step" + i).classList.toggle("active", i === n);
+      document.getElementById("dot-" + i).classList.toggle("active", i === n);
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function renderStep2(category) {
+  function renderStep3(category) {
     const cat = CATEGORIES[category];
 
-    // Badge
     document.getElementById("selected-badge").innerHTML =
       `<div class="selected-category-badge">${cat.label}</div>`;
 
-    // Radio options
     const list = document.getElementById("inquiry-list");
+    list.style.outline = "";
     list.innerHTML = cat.options.map(opt => `
       <div class="inquiry-option">
         <input type="radio" name="inquiryType" id="${opt.id}" value="${opt.value}" />
@@ -661,8 +640,10 @@
   document.getElementById("submit-btn").addEventListener("click", async function () {
     const checked = document.querySelector('input[name="inquiryType"]:checked');
     if (!checked) {
-      document.getElementById("inquiry-list").style.outline = "2px solid #F03424";
-      document.getElementById("inquiry-list").style.borderRadius = "10px";
+      const list = document.getElementById("inquiry-list");
+      list.style.outline = "2px solid #F03424";
+      list.style.borderRadius = "10px";
+      list.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     document.getElementById("inquiry-list").style.outline = "";
@@ -701,7 +682,7 @@
       console.error("Webhook error:", err);
     }
 
-    document.getElementById("step2").style.display = "none";
+    document.getElementById("step3").style.display = "none";
     document.getElementById("step-indicator").style.display = "none";
     document.getElementById("thanks").style.display = "block";
 
